@@ -1,7 +1,7 @@
 """Checkpointer protocol.
 
 The schedule (when to save/restore) lives in
-:class:`~eztrainer.callbacks.CheckpointCallback`; the mechanics (what a
+:class:`~eztrain.callbacks.CheckpointCallback`; the mechanics (what a
 checkpoint physically is) live in framework-specific implementations
 (torch/orbax extras). A trainer advertises what to persist through its
 ``checkpointables`` mapping.
@@ -13,7 +13,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from eztrainer.trainer import Trainer
+    from eztrain.trainer import Trainer
 
 
 @runtime_checkable

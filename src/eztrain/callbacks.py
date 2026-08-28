@@ -12,10 +12,10 @@ from typing import TYPE_CHECKING, Literal
 
 from loguru import logger as log
 
-from eztrainer.checkpoint import Checkpointer
+from eztrain.checkpoint import Checkpointer
 
 if TYPE_CHECKING:
-    from eztrainer.trainer import Trainer
+    from eztrain.trainer import Trainer
 
 
 class Callback:
@@ -102,7 +102,7 @@ class CheckpointCallback(Callback):
 
     The *mechanics* (file formats, best/latest policies, what CONTINUE vs
     FORK restores) belong to the injected
-    :class:`~eztrainer.checkpoint.Checkpointer`.
+    :class:`~eztrain.checkpoint.Checkpointer`.
     """
 
     def __init__(self, *, checkpointer: Checkpointer, save_freq: int = 1) -> None:

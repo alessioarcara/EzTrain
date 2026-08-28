@@ -1,6 +1,6 @@
 import sys
 
-from eztrainer import Logger, NullLogger, RecordingLogger, WandbLogger, resolve_run
+from eztrain import Logger, NullLogger, RecordingLogger, WandbLogger, resolve_run
 
 
 def test_null_logger_accepts_everything():

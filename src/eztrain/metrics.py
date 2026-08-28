@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping, Sequence
 from typing import Any, Protocol, runtime_checkable
 
-from eztrainer.media import Image, Video
+from eztrain.media import Image, Video
 
 
 @runtime_checkable

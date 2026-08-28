@@ -11,8 +11,8 @@ import sys
 from collections.abc import Mapping
 from typing import Any, Protocol, runtime_checkable
 
-from eztrainer.media import Image, Video
-from eztrainer.run import RunInfo
+from eztrain.media import Image, Video
+from eztrain.run import RunInfo
 
 
 @runtime_checkable
@@ -58,9 +58,9 @@ class RecordingLogger:
 
 
 class WandbLogger:
-    """Weights & Biases logger. Requires the ``eztrainer[wandb]`` extra.
+    """Weights & Biases logger. Requires the ``eztrain[wandb]`` extra.
 
-    Maps :class:`~eztrainer.run.RunInfo` onto ``wandb.init``: the run id is the
+    Maps :class:`~eztrain.run.RunInfo` onto ``wandb.init``: the run id is the
     wandb id (so CONTINUE runs resume the same wandb run, ``resume="must"``)
     and the base name is the display name.
     """

@@ -1,6 +1,6 @@
 import re
 
-from eztrainer.run import RunType, generate_run_id, resolve_run, run_id_base
+from eztrain.run import RunType, generate_run_id, resolve_run, run_id_base
 
 TIMESTAMP_RE = re.compile(r"_\d{8}_\d{6}$")
 

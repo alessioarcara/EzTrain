@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
 
-from eztrainer import EpochTrainer, Image, MetricCollection, RecordingLogger
+from eztrain import EpochTrainer, Image, MetricCollection, RecordingLogger
 
 
 class Accuracy:

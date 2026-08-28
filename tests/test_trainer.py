@@ -3,7 +3,7 @@ from typing import Any
 
 import pytest
 
-from eztrainer import Callback, RecordingLogger, Trainer
+from eztrain import Callback, RecordingLogger, Trainer
 
 
 class ToyTrainer(Trainer):

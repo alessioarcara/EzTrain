@@ -285,7 +285,7 @@ wheels = [
 ]
 
 [[package]]
-name = "eztrainer"
+name = "eztrain"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

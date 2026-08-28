@@ -17,10 +17,10 @@ from typing import Any
 from loguru import logger as log
 from tqdm import tqdm
 
-from eztrainer.callbacks import Callback
-from eztrainer.loggers import Logger, NullLogger
-from eztrainer.metrics import MetricCollection
-from eztrainer.run import RunInfo, resolve_run
+from eztrain.callbacks import Callback
+from eztrain.loggers import Logger, NullLogger
+from eztrain.metrics import MetricCollection
+from eztrain.run import RunInfo, resolve_run
 
 
 class Trainer:
@@ -28,7 +28,7 @@ class Trainer:
 
     Stable surface exposed to callbacks (safe to rely on):
 
-    - ``run``: :class:`~eztrainer.run.RunInfo` (run_id, run_type, restore_dir)
+    - ``run``: :class:`~eztrain.run.RunInfo` (run_id, run_type, restore_dir)
     - ``iteration``: current iteration (0 before the loop starts)
     - ``start_iteration``: writable; a restoring callback sets it in
       ``on_train_start`` and the loop resumes from ``start_iteration + 1``
@@ -91,7 +91,7 @@ class Trainer:
 
     @property
     def checkpointables(self) -> Mapping[str, Any]:
-        """What a :class:`~eztrainer.checkpoint.Checkpointer` should persist
+        """What a :class:`~eztrain.checkpoint.Checkpointer` should persist
         (e.g. model/optimizer objects, keyed by name). Override it."""
         return {}
 

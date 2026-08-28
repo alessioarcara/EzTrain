@@ -1,6 +1,6 @@
 from collections.abc import Mapping
 
-from eztrainer import Image, Metric, MetricCollection
+from eztrain import Image, Metric, MetricCollection
 
 
 class CountingMetric:

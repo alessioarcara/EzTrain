@@ -1,11 +1,11 @@
-# eztrainer
+# EzTrain
 
 A small, framework-agnostic training-loop library. The trainer companion to
 [EzConfy](https://github.com/alessioarcara/EzConfy).
 
 Every ML project rewrites the same trainer: a loop over epochs or updates,
 periodic evaluation, callbacks, early stopping, checkpoint scheduling, metric
-logging, graceful `Ctrl+C`. **eztrainer** extracts exactly that skeleton and
+logging, graceful `Ctrl+C`. **EzTrain** extracts exactly that skeleton and
 nothing else:
 
 - **Core never imports torch or jax.** It abstracts the *iteration*, not the
@@ -27,14 +27,14 @@ Core dependencies: `tqdm`, `loguru`. That's it.
 ## Install
 
 ```bash
-uv add eztrainer            # core
-uv add "eztrainer[wandb]"   # + Weights & Biases logger
+uv add eztrain            # core
+uv add "eztrain[wandb]"   # + Weights & Biases logger
 ```
 
 ## Supervised (epoch-based)
 
 ```python
-from eztrainer import EpochTrainer, EarlyStopping, MetricCollection, WandbLogger
+from eztrain import EpochTrainer, EarlyStopping, MetricCollection, WandbLogger
 
 class MyTrainer(EpochTrainer):
     def __init__(self, *, model, optimizer, **kwargs):
@@ -70,7 +70,7 @@ trainer.fit()
 Subclass `Trainer` directly — one iteration is one update:
 
 ```python
-from eztrainer import Trainer
+from eztrain import Trainer
 
 class PPOTrainer(Trainer):
     def __init__(self, *, env, agent, num_steps, **kwargs):
@@ -108,7 +108,7 @@ id, so a CONTINUE run resumes the same wandb run.
 ## Callbacks
 
 ```python
-from eztrainer import Callback
+from eztrain import Callback
 
 class MyCallback(Callback):
     def on_train_start(self, trainer): ...
@@ -132,8 +132,8 @@ straight from YAML:
 ```yaml
 # schema.yaml
 types:
-  Callback: eztrainer.callbacks:Callback
-  Logger: eztrainer.loggers:Logger
+  Callback: eztrain.callbacks:Callback
+  Logger: eztrain.loggers:Logger
 schema:
   trainer:
     callbacks: list[Callback]
@@ -144,10 +144,10 @@ schema:
 # config.yaml
 trainer:
   logger:
-    _target_type_: eztrainer.loggers:WandbLogger
+    _target_type_: eztrain.loggers:WandbLogger
     _init_args_: { project: my-project, entity: me }
   callbacks:
-    - _target_type_: eztrainer.callbacks:EarlyStopping
+    - _target_type_: eztrain.callbacks:EarlyStopping
       _init_args_: { monitor: val/loss, mode: min, patience: 10 }
 ```
 
@@ -155,5 +155,5 @@ trainer:
 
 Concrete train steps, models, losses, optimizers/schedulers (inject your
 own — a library default becomes a cage), metrics implementations, config
-loading, distributed training. Keep those in your project; eztrainer only
+loading, distributed training. Keep those in your project; eztrain only
 owns the loop around them.

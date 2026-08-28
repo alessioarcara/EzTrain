@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
 
-from eztrainer import (
+from eztrain import (
     CheckpointCallback,
     EarlyStopping,
     MonitorCallback,
