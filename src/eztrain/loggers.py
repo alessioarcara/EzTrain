@@ -11,6 +11,8 @@ import sys
 from collections.abc import Mapping
 from typing import Any, Protocol, runtime_checkable
 
+from loguru import logger as log
+
 from eztrain.media import Image, Video
 from eztrain.run import RunInfo
 
@@ -35,6 +37,40 @@ class NullLogger:
 
     def finish(self) -> None:
         pass
+
+
+class ConsoleLogger:
+    """Prints scalar metrics via loguru; non-scalar values are skipped.
+
+    Note: loguru and the trainer's tqdm bars both write to stderr, so each
+    log line makes the bar redraw below it — fine at one line per iteration,
+    noisy if you log per-batch.
+    """
+
+    def start(self, run: RunInfo, config: Mapping[str, Any] | None = None) -> None:
+        pass
+
+    def log(self, metrics: Mapping[str, Any], step: int | None = None) -> None:
+        scalars = ", ".join(
+            f"{k}={self._format(v)}"
+            for k, v in metrics.items()
+            if isinstance(v, int | float)
+        )
+        if not scalars:
+            return
+        if step is None:
+            log.info("{}", scalars)
+        else:
+            log.info("step {}: {}", step, scalars)
+
+    def finish(self) -> None:
+        pass
+
+    @staticmethod
+    def _format(value: int | float) -> str:
+        if isinstance(value, float):
+            return f"{value:.4f}"
+        return str(value)
 
 
 class RecordingLogger:

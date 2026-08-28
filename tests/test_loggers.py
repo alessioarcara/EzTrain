@@ -1,6 +1,15 @@
 import sys
 
-from eztrain import Logger, NullLogger, RecordingLogger, WandbLogger, resolve_run
+from loguru import logger as loguru_logger
+
+from eztrain import (
+    ConsoleLogger,
+    Logger,
+    NullLogger,
+    RecordingLogger,
+    WandbLogger,
+    resolve_run,
+)
 
 
 def test_null_logger_accepts_everything():
@@ -25,8 +34,30 @@ def test_recording_logger_records():
     assert logger.finished
 
 
+def test_console_logger_formats_scalars_and_skips_the_rest():
+    messages: list[str] = []
+    sink_id = loguru_logger.add(messages.append, format="{message}")
+    try:
+        logger = ConsoleLogger()
+        logger.start(resolve_run(None, "x"), config={"a": 1})
+        logger.log(
+            {"loss": 0.123456, "epoch": 3, "done": True, "plot": object()}, step=2
+        )
+        logger.log({"batch_loss": 1.0})
+        logger.log({"plot": object()}, step=5)  # no scalars -> no output
+        logger.finish()
+    finally:
+        loguru_logger.remove(sink_id)
+
+    assert [m.strip() for m in messages] == [
+        "step 2: loss=0.1235, epoch=3, done=True",
+        "batch_loss=1.0000",
+    ]
+
+
 def test_builtin_loggers_satisfy_protocol():
     assert isinstance(NullLogger(), Logger)
+    assert isinstance(ConsoleLogger(), Logger)
     assert isinstance(RecordingLogger(), Logger)
     assert isinstance(WandbLogger(project="p"), Logger)
 

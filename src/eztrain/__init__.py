@@ -13,7 +13,13 @@ from eztrain.callbacks import (
     MonitorCallback,
 )
 from eztrain.checkpoint import Checkpointer
-from eztrain.loggers import Logger, NullLogger, RecordingLogger, WandbLogger
+from eztrain.loggers import (
+    ConsoleLogger,
+    Logger,
+    NullLogger,
+    RecordingLogger,
+    WandbLogger,
+)
 from eztrain.media import Image, Video
 from eztrain.metrics import Metric, MetricCollection
 from eztrain.run import RunInfo, RunType, generate_run_id, resolve_run, run_id_base
@@ -28,6 +34,7 @@ __all__ = [
     "Callback",
     "CheckpointCallback",
     "Checkpointer",
+    "ConsoleLogger",
     "EarlyStopping",
     "EpochTrainer",
     "Image",
