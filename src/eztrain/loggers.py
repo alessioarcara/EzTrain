@@ -1,14 +1,11 @@
-"""Logger protocol and built-in implementations.
-
-The trainer owns *when* to log and with which ``step``; loggers only own
-*where* the metrics go. ``WandbLogger`` imports wandb lazily so the core
-package works without it installed.
-"""
+"""Logger protocol and built-in implementations."""
 
 from __future__ import annotations
 
+import pprint
 import sys
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
 from loguru import logger as log
@@ -152,3 +149,65 @@ class WandbLogger:
         if isinstance(value, Video):
             return wandb.Video(value.frames, fps=value.fps, format="mp4")
         return value
+
+
+class TensorBoardLogger:
+    """TensorBoard logger. Requires the ``eztrain[tensorboard]`` extra.
+
+    Uses torch's ``SummaryWriter`` when torch is installed, otherwise falls
+    back to the API-compatible ``tensorboardX`` one.
+
+    Routes each value in the metrics dict by type, wandb-style:
+
+    - nested ``Mapping``            -> recursed, keys joined with ``/``
+    - :class:`~eztrain.media.Image` -> figure (matplotlib) or HxWxC image
+    - :class:`~eztrain.media.Video` -> video (TxCxHxW frames; needs moviepy)
+    - anything ``float()`` accepts  -> scalar (numbers, 0-d tensors)
+    - everything else               -> dropped
+
+    Events go to ``log_dir / run.run_id``, so CONTINUE runs append to the
+    same directory. ``config`` is stored once under the "config" text tab.
+    """
+
+    def __init__(self, log_dir: str | Path = "runs") -> None:
+        self.log_dir = Path(log_dir)
+        self.writer: Any = None
+
+    def start(self, run: RunInfo, config: Mapping[str, Any] | None = None) -> None:
+        try:
+            from torch.utils.tensorboard import SummaryWriter
+        except ImportError:
+            from tensorboardX import SummaryWriter
+
+        self.writer = SummaryWriter(self.log_dir / run.run_id)
+        if config is not None:
+            self.writer.add_text("config", f"```\n{pprint.pformat(dict(config))}\n```")
+
+    def log(self, metrics: Mapping[str, Any], step: int | None = None) -> None:
+        for tag, value in metrics.items():
+            self._log(tag, value, step)
+
+    def finish(self) -> None:
+        if self.writer is not None:
+            self.writer.close()
+
+    def _log(self, tag: str, value: Any, step: int | None) -> None:
+        w = self.writer
+        assert w is not None, "call start() first"
+
+        if isinstance(value, Mapping):
+            for k, v in value.items():
+                self._log(f"{tag}/{k}", v, step)
+        elif isinstance(value, Image):
+            if hasattr(value.data, "savefig"):
+                w.add_figure(tag, value.data, step, close=True)
+            else:
+                w.add_image(tag, value.data, step, dataformats="HWC")
+        elif isinstance(value, Video):
+            # add_video wants NxTxCxHxW; media.Video carries a single clip
+            w.add_video(tag, value.frames[None], step, fps=value.fps)
+        else:
+            try:
+                w.add_scalar(tag, float(value), step)
+            except (TypeError, ValueError):
+                pass  # not numeric and not a known media type

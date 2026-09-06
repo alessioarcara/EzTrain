@@ -27,8 +27,9 @@ Core dependencies: `tqdm`, `loguru`. That's it.
 ## Install
 
 ```bash
-uv add eztrain            # core
-uv add "eztrain[wandb]"   # + Weights & Biases logger
+uv add eztrain                  # core
+uv add "eztrain[wandb]"         # + Weights & Biases logger
+uv add "eztrain[tensorboard]"   # + TensorBoard logger
 ```
 
 ## Supervised (epoch-based)
@@ -98,12 +99,9 @@ Trainer(run_name="exp-1", resume_from="exp-1_20260530_051406")     # CONTINUE
 Trainer(run_name="exp-2", resume_from="exp-1_20260530_051406")     # FORK
 ```
 
-`trainer.run` carries `run_id`, `run_type` and `restore_dir`. A
-`CheckpointCallback` restores in `on_train_start` (setting
-`trainer.start_iteration`) and saves on schedule; the checkpoint *mechanics*
-live in a `Checkpointer` implementation you inject (torch/orbax
-implementations ship as extras — coming next). `WandbLogger` reuses the run
-id, so a CONTINUE run resumes the same wandb run.
+Pass `resume_from` to start from an existing run's checkpoint: 
+- Same `run_name` → the run **continues**; 
+- a new `run_name` -> it **forks** into a new run. 
 
 ## Callbacks
 
