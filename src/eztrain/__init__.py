@@ -18,6 +18,7 @@ from eztrain.loggers import (
     Logger,
     NullLogger,
     RecordingLogger,
+    TensorBoardLogger,
     WandbLogger,
 )
 from eztrain.media import Image, Video
@@ -46,6 +47,7 @@ __all__ = [
     "RecordingLogger",
     "RunInfo",
     "RunType",
+    "TensorBoardLogger",
     "Trainer",
     "Video",
     "WandbLogger",
