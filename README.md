@@ -100,7 +100,7 @@ Trainer(run_name="exp-2", resume_from="exp-1_20260530_051406")     # FORK
 ```
 
 Pass `resume_from` to start from an existing run's checkpoint: 
-- Same `run_name` → the run **continues**; 
+- Same `run_name` -> the run **continues**; 
 - a new `run_name` -> it **forks** into a new run. 
 
 ## Callbacks
